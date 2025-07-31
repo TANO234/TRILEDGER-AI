@@ -1,0 +1,317 @@
+{
+  "name": "TRILEDGER",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "39aec70b-bb75-4bfd-bea8-e80e78e9e1c0",
+      "name": "Telegram Trigger",
+      "webhookId": "04ac5e6b-4b3a-411f-b22d-f5e2086f0d58",
+      "credentials": {
+        "telegramApi": {
+          "id": "KfnbRnssWb4Yrmfn",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=YOU ARE AN AI AGENT CALLED TRILEDGER YOU ARE CAPABLE OF BUILDING INCOME STATEMENT, CASH FLOW, BALANCE SHEET .\n\nYOU GET THE INPUT FROM THE USER IN TEXT FORMAT AND ANALYSE THE TEXT.\n\nIF YOU DID'NT GET ANY FINANCIAL DETAILS FROM THE USER YOU CAN ACT AS AN NORMAL CHAT BOT AND REPLY TO THE USER LIKE AN HUMAN.\n\nALWAYS CALL THE INCOME AGENT TOOL FIRST\n\nTHEN CALL THE BALANCE SHEET AGENT SECOND\n\nTHEN GIVE AN CLEAR RESPONSE FOR THE USER\n\nTRY TO REMOVE SPECIAL CHARACTERS AND GIVE IN SIMPLE TEXT FORMAT . DONT GIVE IN TABLE FORMAT\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "a5f92f6c-dda6-411e-8af1-829b4a52df07",
+      "name": "TRILEDGER"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.from.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -32,
+        224
+      ],
+      "id": "72af5f02-62b6-4183-a81a-061823074de3",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "description": "THIS TOOL IS USED TO CALL INCOME AGENT THAT CREATES INCOME STATEMENT",
+        "workflowId": {
+          "__rl": true,
+          "value": "vxPrL3Ty7y1BB2zf",
+          "mode": "list",
+          "cachedResultName": "INCOME AGENT"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "income": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('income', `GIVE AN PROPER FORMATTED INCOME STATEMENT`, 'string') }}"
+          },
+          "matchingColumns": [
+            "income"
+          ],
+          "schema": [
+            {
+              "id": "income",
+              "displayName": "income",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        288,
+        256
+      ],
+      "id": "f9b811b9-3271-415b-92f2-bceed5633b41",
+      "name": "INCOME AGENT"
+    },
+    {
+      "parameters": {
+        "description": "THIS TOOL IS USED TO CALL THE BALANCE SHEET AI AGENT",
+        "workflowId": {
+          "__rl": true,
+          "value": "dFqtnj6o7eK19fGT",
+          "mode": "list",
+          "cachedResultName": "Balance sheet"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "balance": "={{ $('Telegram Trigger').item.json.message.text }}"
+          },
+          "matchingColumns": [
+            "balance"
+          ],
+          "schema": [
+            {
+              "id": "balance",
+              "displayName": "balance",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        256
+      ],
+      "id": "b5ae1deb-c51d-44ad-94f8-c310c98f0097",
+      "name": "BALANCE SHEET AGENT"
+    },
+    {
+      "parameters": {
+        "description": "THIS TOOL IS USED TO CALL THE CASHFLOW AI AGENT",
+        "workflowId": {
+          "__rl": true,
+          "value": "qtHZaKpmFrKLg5E8",
+          "mode": "list",
+          "cachedResultName": "Cashflow agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [
+            "cashflow"
+          ],
+          "schema": [
+            {
+              "id": "cashflow",
+              "displayName": "cashflow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        576,
+        256
+      ],
+      "id": "3de9ed60-39ed-40ef-9183-2217ba3fc4cb",
+      "name": "CASHFLOW AGENT"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        128,
+        240
+      ],
+      "id": "11f9c61f-e073-46f4-b015-fb0c93635443",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "XLO6nrol3mHZejbY",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "95088e5c-86f7-4701-a88a-0dc064db7222",
+      "name": "Send a text message",
+      "webhookId": "f5995117-bf34-426f-878b-594cc7767b21",
+      "credentials": {
+        "telegramApi": {
+          "id": "KfnbRnssWb4Yrmfn",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "TRILEDGER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "TRILEDGER",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TRILEDGER": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "INCOME AGENT": {
+      "ai_tool": [
+        [
+          {
+            "node": "TRILEDGER",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BALANCE SHEET AGENT": {
+      "ai_tool": [
+        [
+          {
+            "node": "TRILEDGER",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CASHFLOW AGENT": {
+      "ai_tool": [
+        [
+          {
+            "node": "TRILEDGER",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "TRILEDGER",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "467892f8-7405-4e1b-9847-5e44f3c28bb9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1e780db0b51d14b322c1b720f1b3b2e4eb21c601f3d035580515d515ccc03fca"
+  },
+  "id": "RigoLkNbNhaslgil",
+  "tags": []
+}
