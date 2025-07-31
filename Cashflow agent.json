@@ -1,0 +1,101 @@
+{
+  "name": "Cashflow agent",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "cashflow"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "bccce591-2642-431c-b584-607c72502cbf",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.cashflow }}",
+        "options": {
+          "systemMessage": "YOU ARE AN AI AGENT WHICH IS USED TO CALCULATE THE CASHFLOWS AND SEND IT BACK TO TRILEDGER"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "60173ba0-4871-477d-a5fe-b6ce09b5efe3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        208
+      ],
+      "id": "deeb12bb-c25f-48fe-8182-9f6612318875",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "SWtw2KeTivQb2xyY",
+          "name": "OpenAi account 4"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b2245546-2c1d-496b-90e6-abb027e46a50",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1e780db0b51d14b322c1b720f1b3b2e4eb21c601f3d035580515d515ccc03fca"
+  },
+  "id": "qtHZaKpmFrKLg5E8",
+  "tags": []
+}

@@ -1,0 +1,101 @@
+{
+  "name": "Balance sheet",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "balance"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b595ceb4-d149-4a04-aa35-aa5bd9fc63f9",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.balance }}",
+        "options": {
+          "systemMessage": "YOU ARE AN AI AGENT \n\nYOUR GOAL IS TO CALCULATE BALANCE SHEET AND SEND IT BACK TO TRILEDGER"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "88e67103-49a0-469c-b0e0-4f624b2a186d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        208
+      ],
+      "id": "3b0a3d9b-6afe-4741-9690-324760dfe511",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "SWtw2KeTivQb2xyY",
+          "name": "OpenAi account 4"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "08e4f696-772d-4d9b-9217-2b2509c033ea",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1e780db0b51d14b322c1b720f1b3b2e4eb21c601f3d035580515d515ccc03fca"
+  },
+  "id": "dFqtnj6o7eK19fGT",
+  "tags": []
+}
